@@ -101,6 +101,7 @@ cp infra/.env.example infra/.env
 # 2. Construir y levantar servicios
 cd infra
 docker compose up -d --build
+```
 
 ---
 
