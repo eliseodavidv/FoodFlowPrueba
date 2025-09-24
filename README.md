@@ -118,41 +118,6 @@ docker compose up -d --build
 
 ---
 
-## 📂 Estructura del Proyecto
-
-foodflow/
-├── README.md
-├── docs/
-│ ├── arquitectura.drawio
-│ ├── er-diagrams/
-│ │ ├── customers_reservations.er.md
-│ │ └── orders_invoices.er.md
-│ └── analytics/
-│ ├── catalog_design.md
-│ └── queries_and_views.sql
-├── infra/
-│ ├── docker-compose.yml
-│ ├── .env.example
-│ └── lb/default.conf
-├── frontend/
-│ └── web-portal/
-├── backend/
-│ ├── ms-customers/
-│ ├── ms-orders/
-│ ├── ms-menu/
-│ ├── ms-history/
-│ └── ms-analytics/
-├── data-ingestion/
-│ ├── ingest_sql_db1/
-│ ├── ingest_sql_db2/
-│ └── ingest_nosql/
-└── .github/
-├── workflows/
-├── PULL_REQUEST_TEMPLATE.md
-└── ISSUE_TEMPLATE/
-
----
-
 ## 🚦 Definition of Done
 
 - **Microservicios**: OpenAPI + endpoints activos + BD con seed  
