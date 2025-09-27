@@ -1,4 +1,24 @@
 services:
+  ms-orders-api:
+    build: ./ms-orders
+    ports:
+      - "8002:4000"
+    depends_on:
+      - db-orders
+      - ms-customers
+      - ms-menu-api
+    environment:
+      - MONGO_URI=mongodb://db-orders:27017/ordersdb
+      - CLIENTES_URL=http://ms-customers:8001
+      - MENU_URL=http://ms-menu-api:5000
+  
+  db-orders:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - orders_data:/data/db
+      
   db-customers:
     image: postgres:15
     container_name: db-customers
@@ -40,3 +60,4 @@ services:
 
 volumes:
   customers_data:
+  orders_data:
