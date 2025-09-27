@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  analytics:
+    build: .
+    ports:
+      - "8000:80"
+    environment:
+      - AWS_REGION=us-east-1
+      - S3_OUTPUT=s3://mi-proyecto-queries/athena-results/
+      - ATHENA_DEFAULT_DB=default
+    volumes:
+      - ./app:/app/app
