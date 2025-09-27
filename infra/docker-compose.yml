@@ -1,0 +1,63 @@
+services:
+  ms-orders-api:
+    build: ./ms-orders
+    ports:
+      - "8002:4000"
+    depends_on:
+      - db-orders
+      - ms-customers
+      - ms-menu-api
+    environment:
+      - MONGO_URI=mongodb://db-orders:27017/ordersdb
+      - CLIENTES_URL=http://ms-customers:8001
+      - MENU_URL=http://ms-menu-api:5000
+  
+  db-orders:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - orders_data:/data/db
+      
+  db-customers:
+    image: postgres:15
+    container_name: db-customers
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: customersdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - customers_data:/var/lib/postgresql/data
+
+  ms-customers:
+    build: ../backend/ms-customers
+    container_name: ms-customers
+    depends_on:
+      - db-customers
+    environment:
+      DATABASE_URL: postgresql://admin:admin@db-customers:5432/customersdb
+    ports:
+      - "8001:8001"
+    volumes:
+      - ../backend/ms-customers/app:/app/app
+
+  ms-history:
+    build: ../backend/ms-history
+    container_name: ms-history
+    depends_on:
+      - ms-customers
+    environment:
+      CUSTOMERS_URL: http://ms-customers:8001/customers
+      ORDERS_URL: http://ms-orders:8002/orders  # se conectará cuando B2 implemente orders
+      MENU_URL: http://ms-menu:8003/menu        # se conectará cuando B2 implemente menu
+    ports:
+      - "8004:8004"
+    volumes:
+      - ../backend/ms-history/app:/app/app
+
+volumes:
+  customers_data:
+  orders_data:
