@@ -11,5 +11,7 @@ router.get('/test', (req, res) => {
 router.get('/', controller.getPedidos);
 router.post('/', controller.createPedido);
 router.get('/:id', controller.getPedidoEnriquecido);
+router.delete('/:id', controller.deletePedido); 
 
 export default router;
+
