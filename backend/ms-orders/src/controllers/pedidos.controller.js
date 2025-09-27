@@ -37,7 +37,7 @@ export async function getPedidoEnriquecido(req, res) {
     const clienteRes = await fetch(`${process.env.CLIENTES_URL}/customers/${pedido.cliente_id}`);
     const cliente = await clienteRes.json();
 
-    const platos = [];
+    const platos = [];  
     for (const p of pedido.platos) {
       const platoRes = await fetch(`${process.env.MENU_URL}/platos/${p.plato_id}`);
       const info = await platoRes.json();
@@ -49,3 +49,21 @@ export async function getPedidoEnriquecido(req, res) {
     res.status(500).json({ error: 'Error al obtener pedido enriquecido', detalle: err.message });
   }
 }
+
+export async function deletePedido(req, res) {
+  const { id } = req.params;
+
+  try {
+    const resultado = await Pedido.findByIdAndDelete(id);
+
+    if (!resultado) {
+      return res.status(404).json({ mensaje: 'Pedido no encontrado' });
+    }
+
+    res.status(204).send(); 
+  } catch (error) {
+    console.error('[DELETE] Error al eliminar pedido:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+}
+
