@@ -131,7 +131,7 @@ docker compose up -d --build
 ## 🛠️ Tecnologías Propuestas
 
 ### Backend
-- **Lenguajes**: Node.js, Python, Java  
+- **Lenguajes**: Node.js, Python, Go  
 - **Frameworks**: Express, FastAPI, Spring Boot  
 - **Bases de Datos**: MySQL, PostgreSQL, MongoDB  
 
