@@ -1,0 +1,135 @@
+openapi: 3.0.2
+info:
+  title: API Consultas Analíticas
+  description: >
+    API para ejecutar consultas SQL en AWS Athena y obtener resultados analíticos.  
+    Permite ejecutar consultas sincrónicas o asincrónicas, y recuperar el estado y los resultados de una ejecución previa.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Servidor local
+  - url: https://api.foodflow.ai
+    description: Servidor de producción
+
+paths:
+  /health:
+    get:
+      summary: Verifica el estado del servicio
+      description: Retorna un mensaje simple para comprobar que la API está activa.
+      responses:
+        "200":
+          description: Respuesta exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /analytics/query:
+    post:
+      summary: Ejecuta una consulta en Athena
+      description: >
+        Ejecuta una consulta SQL sobre la base de datos especificada en Athena.  
+        Puede ejecutarse de forma sincrónica (esperando resultados) o asincrónica (solo retorna el `execution_id`).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QueryRequest"
+      responses:
+        "200":
+          description: Consulta ejecutada correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  execution_id:
+                    type: string
+                    description: ID único de la ejecución en Athena
+                    example: "1234abcd-5678-efgh-9012-ijklmnopqrst"
+                  rows:
+                    type: array
+                    description: Resultados de la consulta (solo si `async_query=false`)
+                    items:
+                      type: object
+                      example:
+                        customer_id: 101
+                        total_pedidos: 45
+        "500":
+          description: Error en la ejecución de la consulta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Query status: FAILED"
+
+  /analytics/query/{execution_id}:
+    get:
+      summary: Consulta el estado o resultado de una ejecución previa
+      description: >
+        Devuelve el estado actual de una ejecución en Athena.  
+        Si la consulta ha finalizado correctamente (`SUCCEEDED`), también devuelve los resultados.
+      parameters:
+        - name: execution_id
+          in: path
+          required: true
+          description: ID de ejecución devuelto por el endpoint `/analytics/query`
+          schema:
+            type: string
+            example: "1234abcd-5678-efgh-9012-ijklmnopqrst"
+      responses:
+        "200":
+          description: Estado o resultado de la consulta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  execution_id:
+                    type: string
+                    example: "1234abcd-5678-efgh-9012-ijklmnopqrst"
+                  status:
+                    type: string
+                    example: "SUCCEEDED"
+                  rows:
+                    type: array
+                    items:
+                      type: object
+                      example:
+                        menu_id: 5
+                        cantidad_vendida: 150
+        "404":
+          description: ID de ejecución no encontrado
+        "500":
+          description: Error al recuperar el estado
+
+components:
+  schemas:
+    QueryRequest:
+      type: object
+      required:
+        - sql
+      properties:
+        sql:
+          type: string
+          description: Sentencia SQL a ejecutar en Athena
+          example: "SELECT customer_id, COUNT(*) AS total_pedidos FROM pedidos GROUP BY customer_id;"
+        database:
+          type: string
+          nullable: true
+          description: Base de datos de Athena donde se ejecutará la consulta
+          example: "foodflow_db"
+        async_query:
+          type: boolean
+          description: >
+            Si es `true`, la API devuelve solo el `execution_id` y la consulta continúa ejecutándose en segundo plano.  
+            Si es `false`, la API espera hasta obtener los resultados.
+          default: false
