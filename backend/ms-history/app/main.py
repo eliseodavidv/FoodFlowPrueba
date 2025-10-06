@@ -5,7 +5,7 @@ app = FastAPI(title="MS History")
 
 CUSTOMERS_URL = os.getenv("CUSTOMERS_URL", "http://ms-customers:8001/customers")
 RESERVATIONS_URL = os.getenv("RESERVATIONS_URL", "http://ms-customers:8001/reservations")
-ORDERS_URL = os.getenv("ORDERS_URL", None)
+ORDERS_URL = os.getenv("ORDERS_URL", "http://ms-orders:8002/pedidos")
 MENU_URL = os.getenv("MENU_URL", None)
 
 
@@ -30,21 +30,49 @@ async def get_customer_history(customer_id: int):
             orders_data = []
             if ORDERS_URL:
                 try:
-                    orders_resp = await client.get(f"{ORDERS_URL}?customer_id={customer_id}")
+                    orders_resp = await client.get(f"{ORDERS_URL}/customers/{customer_id}")
+                    print("ORDERS status:", orders_resp.status_code)
+
                     if orders_resp.status_code == 200:
-                        orders_data = orders_resp.json()
-                except:
-                    pass
+                        try:
+                            orders_json = orders_resp.json()
+                            print("ORDERS parsed:", orders_json)
+
+                            if isinstance(orders_json, list):
+                                orders_data = orders_json
+                            else:
+                                print("ORDERS no es lista:", type(orders_json))
+
+                        except Exception as parse_error:
+                            print("ORDERS parse error:", str(parse_error))
+                    else:
+                        print("ORDERS no respondio 200:", orders_resp.text)
+
+                except Exception as fetch_error:
+                    print("ORDERS fetch error:", str(fetch_error))
+
+
+            plato_ids_usados = set()
+            for pedido in orders_data:
+                pedido.pop("id", None)
+                pedido.pop("cliente_id", None)
+                for item in pedido.get("items", []):
+                    item.pop("id", None)
+                    item.pop("pedido_id", None)
+                    plato_ids_usados.add(item["plato_id"])
 
             menu_data = []
-            if MENU_URL:
-                try:
-                    menu_resp = await client.get(MENU_URL)
-                    if menu_resp.status_code == 200:
-                        menu_data = menu_resp.json()
-                except:
-                    pass
-
+            if MENU_URL and plato_ids_usados:
+                for pid in plato_ids_usados:
+                    try:
+                        resp = await client.get(f"{MENU_URL}/{pid}")
+                        if resp.status_code == 200:
+                            plato = resp.json()
+                            if isinstance(plato, dict):
+                                menu_data.append(plato)
+                    except:
+                        pass
+            
             return {
                 "customer": customer_data,
                 "reservations": reservations_data,

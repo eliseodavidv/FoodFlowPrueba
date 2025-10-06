@@ -1,0 +1,122 @@
+basePath: /
+definitions:
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.ItemPedido:
+    properties:
+      cantidad:
+        type: integer
+      id:
+        type: integer
+      nombre:
+        type: string
+      pedido_id:
+        type: integer
+      plato_id:
+        type: string
+      precio:
+        type: number
+    type: object
+  models.Pedido:
+    properties:
+      cliente_id:
+        type: integer
+      estado:
+        type: string
+      fecha:
+        type: string
+      id:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/models.ItemPedido'
+        type: array
+      notas:
+        type: string
+      total:
+        type: number
+    type: object
+host: localhost:8002
+info:
+  contact: {}
+  description: Documentación Swagger para ms-orders
+  title: Orders API
+  version: "1.0"
+paths:
+  /pedidos:
+    get:
+      description: Devuelve todos los pedidos registrados con sus ítems
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Pedido'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Lista todos los pedidos
+      tags:
+      - pedidos
+    post:
+      consumes:
+      - application/json
+      description: Crea un pedido con los datos enviados
+      parameters:
+      - description: Datos del pedido
+        in: body
+        name: pedido
+        required: true
+        schema:
+          $ref: '#/definitions/models.Pedido'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Pedido'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Crea un nuevo pedido
+      tags:
+      - pedidos
+  /pedidos/customers/{id}:
+    get:
+      description: Devuelve los pedidos asociados a un cliente específico
+      parameters:
+      - description: ID del cliente
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Pedido'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Lista pedidos por cliente
+      tags:
+      - pedidos
+swagger: "2.0"

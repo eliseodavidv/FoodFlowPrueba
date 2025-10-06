@@ -3,15 +3,39 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 const connectDB = require('./config/database');
 const menuRoutes = require('./routes/menuRoutes');
 
 // Inicializar Express
 const app = express();
 
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Menu API',
+      version: '1.0.0',
+      description: 'Documentación Swagger para ms-menu',
+    },
+    servers: [
+      {
+        url: 'http://localhost:8003',
+      },
+    ],
+  },
+  apis: ['./src/routes/*.js'], // ajustá según tu estructura
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
 // Conectar a la base de datos
 connectDB();
+const seedMenu = require('./seeds/menuSeeder');
+seedMenu(); // Ejecuta el seeder al iniciar el servidor
 
 // Middlewares
 app.use(helmet());

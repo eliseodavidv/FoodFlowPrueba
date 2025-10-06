@@ -30,35 +30,52 @@ const conectarDB = async () => {
 
 const generarMenuItems = async () => {
   try {
+    const count = await MenuItem.countDocuments();
+    if (count > 0) {
+      console.log(`🟡 Seeding omitido: ya existen ${count} platos.`);
+      return;
+    }
+    
     console.log('Eliminando datos existentes...');
     await MenuItem.deleteMany({});
 
-    console.log('Generando 25,000 elementos del menú...');
+    console.log('Generando elementos del menú...');
     const menuItems = [];
 
-    for (let i = 0; i < 25000; i++) {
-      const categoria = faker.random.arrayElement(categorias);
+    for (const categoria of categorias) {
       const nombres = nombresComida[categoria];
-      const nombreBase = faker.random.arrayElement(nombres);
-      
-      const menuItem = {
-        nombre: `${nombreBase} ${faker.random.number({ min: 1, max: 100 })}`,
-        descripcion: faker.lorem.sentence(),
-        precio: faker.random.number({ min: 5, max: 80, precision: 0.1 }),
-        categoria: categoria,
-        ingredientes: faker.random.words(faker.random.number({ min: 2, max: 6 })).split(' '),
-        disponible: faker.random.boolean(),
-        tiempo_preparacion: faker.random.number({ min: 5, max: 45 }),
-        imagen_url: `${categoria.toLowerCase()}-${i}.jpg`,
-        vegetariano: faker.random.boolean(),
-        vegano: faker.random.boolean()
-      };
+      for (const nombreBase of nombres) {
+        const menuItem = {
+          nombre: nombreBase,
+          descripcion: faker.random.arrayElement([
+            'Deliciosa preparación casera con ingredientes frescos.',
+            'Ideal para compartir en familia.',
+            'Sabor auténtico con toque tradicional.',
+            'Receta inspirada en la cocina peruana.',
+            'Perfecto para acompañar con una bebida fría.',
+            'Textura suave y sabor intenso.'
+          ]),
+          precio: faker.datatype.number({ min: 5, max: 80, precision: 0.1 }),
+          categoria: categoria,
+          ingredientes: faker.helpers.shuffle([
+            'tomate', 'queso', 'pollo', 'cebolla', 'pimiento', 'ajo',
+            'aceite de oliva', 'albahaca', 'carne', 'arroz', 'papa',
+            'limón', 'chocolate', 'harina', 'leche'
+          ]).slice(0, faker.datatype.number({ min: 2, max: 6 })),
+          disponible: faker.datatype.boolean(),
+          tiempo_preparacion: faker.datatype.number({ min: 5, max: 45 }),
+          imagen_url: `${categoria.toLowerCase()}-${nombreBase.replace(/\s+/g, '-')}.jpg`,
+          vegetariano: faker.random.boolean(),
+          vegano: faker.datatype.boolean()
+        };
 
-      menuItems.push(menuItem);
+        menuItems.push(menuItem);
+      }
     }
+    console.log(`Total a insertar: ${menuItems.length}`);
 
     await MenuItem.insertMany(menuItems);
-    console.log('25,000 elementos del menú creados exitosamente');
+    console.log(`${menuItems.length} elementos del menú creados exitosamente`);
     
     process.exit(0);
   } catch (error) {
@@ -67,4 +84,7 @@ const generarMenuItems = async () => {
   }
 };
 
-conectarDB().then(generarMenuItems);
+module.exports = async function seedMenu() {
+  await conectarDB();
+  await generarMenuItems();
+};
