@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const API_URLS = {
-    customers: 'http://localhost:8001',
-    orders: 'http://localhost:8002',
-    menu: 'http://localhost:8003/api/v1',
-    history: 'http://localhost:8004',
-    analytics: 'http://localhost:8010'
+    customers: 'http://54.159.22.116:8001',
+    orders: 'http://54.159.22.116:8002',
+    menu: 'http://54.159.22.116:8003/api/v1',
+    history: 'http://54.159.22.116:8004',
+    analytics: 'http://54.159.22.116:8010'
 };
 
 export const customersAPI = axios.create({
