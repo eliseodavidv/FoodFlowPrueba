@@ -1,13 +1,12 @@
 import axios from 'axios';
 
 const API_URLS = {
-    customers: 'http://54.159.22.116:8001',
-    orders: 'http://54.159.22.116:8002',
-    menu: 'http://54.159.22.116:8003/api/v1',
-    history: 'http://54.159.22.116:8004',
-    analytics: 'http://54.159.22.116:8010'
+    customers: 'http://18.234.45.122:8001',
+    orders: 'http://18.234.45.122:8002',
+    menu: 'http://18.234.45.122:8003/api/v1',
+    history: 'http://18.234.45.122:8004',
+    analytics: 'http://18.234.45.122:8010'
 };
-
 export const customersAPI = axios.create({
     baseURL: API_URLS.customers,
     headers: { 'Content-Type': 'application/json' },
