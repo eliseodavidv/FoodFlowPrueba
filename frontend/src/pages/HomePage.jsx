@@ -3,7 +3,7 @@ const HomePage = () => {
         <div className="space-y-6">
             <div className="bg-white rounded-lg shadow p-6">
                 <h1 className="text-3xl font-bold text-gray-800 mb-4">
-                    Bienvenido a FoodFlow
+                    Bienvenido a FoodFlow 321
                 </h1>
                 <p className="text-gray-600 mb-4">
                     Sistema integral de gestión para restaurantes con arquitectura de microservicios
@@ -13,7 +13,7 @@ const HomePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500">
                     <h3 className="text-lg font-semibold text-blue-800 mb-2">Clientes</h3>
-                    <p className="text-blue-600">Gestión completa de clientes y reservas</p>
+                    <p className="text-blue-600">Gestión completa de clientes y reservas</p>s
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border-l-4 border-green-500">

@@ -29,7 +29,7 @@ const Navbar = () => {
                         <Link to="/menu" className={`px-4 py-2 rounded-md text-sm font-medium transition ${isActive('/menu')}`}>
                             Menú
                         </Link>
-                        <Link to="/orders" className={`px-4 py-2 rounded-md text-sm font-medium transition ${isActive('/orders')}`}>
+                        <Link to="/orders" className={`px-4 py-2 rounded-md text-sm font-medium transition ${isActive('/pedidos')}`}>
                             Pedidos
                         </Link>
                         <Link to="/analytics" className={`px-4 py-2 rounded-md text-sm font-medium transition ${isActive('/analytics')}`}>
