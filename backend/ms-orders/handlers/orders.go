@@ -254,7 +254,7 @@ func ListarPedidosPorCustomer(c *gin.Context) {
     c.JSON(http.StatusOK, pedidos)
 
 }
-func CORSMiddleware() gin.HandlerFunc {
+func CorsMiddleware() gin.HandlerFunc {
     return func(c *gin.Context) {
         c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
         c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")

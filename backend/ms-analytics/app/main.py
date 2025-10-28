@@ -3,8 +3,18 @@ from pydantic import BaseModel
 import os
 from app.athena_client import AthenaClient
 from typing import Optional
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="API Consultas Analíticas")
+
+# --- Configuración CORS ---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # o pon tu dominio específico: ["http://52.73.193.181"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
 S3_OUTPUT = os.getenv("S3_OUTPUT", "s3://bucket-foodflow-2/athena-results/")
