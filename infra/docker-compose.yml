@@ -105,6 +105,20 @@ services:
     volumes:
       - ../backend/ms-history/app:/app/app
 
+  analytics:
+    build: ../backend/ms-analytics
+    container_name: ms-analytics
+    ports:
+      - "8010:80"
+    environment:
+      - AWS_REGION=us-east-1
+      - S3_OUTPUT=s3://bucket-foodflow-1/athena-results/
+      - ATHENA_DEFAULT_DB=foodflowanalytics
+      - ATHENA_WORKGROUP=primary
+    volumes:
+      - ../backend/ms-analytics/app:/app/app
+
+
 volumes:  
   customers_data:
   db-orders-data:
