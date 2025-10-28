@@ -22,7 +22,14 @@ func main() {
     database.Connect()
 
     r := gin.Default()
-    r.Use(handlers.CorsMiddleware()
+    r.Use(handlers.CorsMiddleware())
+    r.OPTIONS("/pedidos", func(c *gin.Context) {
+        c.Writer.Header().Set("Access-Control-Allow-Origin", "http://52.73.193.181")
+        c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+        c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        c.Status(204)
+    })
     r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
     r.POST("/pedidos", handlers.CrearPedido)
     r.GET("/pedidos", handlers.ListarPedidos)
@@ -32,5 +39,5 @@ func main() {
     if port == "" {
         port = "8002"
     }
-    log.Fatal(r.Run(":" + port))
+    log.Fatal(r.Run("0.0.0.0:" + port))
 }
