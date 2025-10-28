@@ -22,6 +22,7 @@ func main() {
     database.Connect()
 
     r := gin.Default()
+    r.Use(CORSMiddleware())
     r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
     r.POST("/pedidos", handlers.CrearPedido)
     r.GET("/pedidos", handlers.ListarPedidos)

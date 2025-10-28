@@ -7,8 +7,8 @@ from typing import Optional
 app = FastAPI(title="API Consultas Analíticas")
 
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
-S3_OUTPUT = os.getenv("S3_OUTPUT", "s3://bucket-foodflow-1/athena-results/")
-DEFAULT_DB = os.getenv("ATHENA_DEFAULT_DB", "default")
+S3_OUTPUT = os.getenv("S3_OUTPUT", "s3://bucket-foodflow-2/athena-results/")
+DEFAULT_DB = os.getenv("ATHENA_DEFAULT_DB", "foodflowdb")
 WORKGROUP = os.getenv("ATHENA_WORKGROUP")
 
 athena = AthenaClient(region_name=AWS_REGION, output_location=S3_OUTPUT, workgroup=WORKGROUP)

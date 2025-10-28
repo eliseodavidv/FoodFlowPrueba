@@ -112,8 +112,8 @@ services:
       - "8010:80"
     environment:
       - AWS_REGION=us-east-1
-      - S3_OUTPUT=s3://bucket-foodflow-1/athena-results/
-      - ATHENA_DEFAULT_DB=foodflowanalytics
+      - S3_OUTPUT=s3://bucket-foodflow-2/athena-results/
+      - ATHENA_DEFAULT_DB=foodflowdb
       - ATHENA_WORKGROUP=primary
     volumes:
       - ../backend/ms-analytics/app:/app/app
