@@ -32,6 +32,9 @@ const Navbar = () => {
                         <Link to="/orders" className={`px-4 py-2 rounded-md text-sm font-medium transition ${isActive('/pedidos')}`}>
                             Pedidos
                         </Link>
+                        <Link to="/history" className={`px-4 py-2 rounded-md text-sm font-medium transition ${isActive('/history')}`}>
+                            History
+                        </Link>
                         <Link to="/analytics" className={`px-4 py-2 rounded-md text-sm font-medium transition ${isActive('/analytics')}`}>
                             Analytics
                         </Link>
